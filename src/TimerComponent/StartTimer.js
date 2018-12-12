@@ -16,7 +16,7 @@ class StartTimer extends Component {
   handleSubmit(e){
 
     var timeValue = this.refs.category.value * 1000;
-
+    this.input.setAttribute("disabled", "disabled");
     this.setTimes(timeValue);
 
     // Set the date we're counting down to
@@ -37,6 +37,7 @@ class StartTimer extends Component {
   "\n" +this.state.timer);
 
   if (distance < 0) {
+    this.input.removeAttribute("disabled");
     clearInterval(x);
     this.setState({timer: "EXPIRED"});
   }
@@ -72,7 +73,7 @@ setTimes(distance) {
             {this.state.timer}
           </div>
           <br />
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Submit" ref={input => {this.input = input}}/>
         </form>
       </div>
     );
