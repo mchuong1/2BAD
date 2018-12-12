@@ -36,10 +36,10 @@ app.get('/count/?*', function(request, response){
     console.log('timeDiff: ' + timeDiff + '\nclientID: ' + clientID);
 
     setTimeDiff(clientID, timeDiff);
-
+    console.log(getTimeDiff(clientID));
     if(getTimeDiffSize() < 3) {
-    response.status('Waiting on other players...');
-    response.send(200);
+    response.status(200);
+    response.send('Waiting on other players...');
     } else {
     startGame();
     }
@@ -48,18 +48,18 @@ app.get('/count/?*', function(request, response){
 
     function startGame() {
     //start game logic here
+    console.log('start');
     }
-
 
 
     var timeDiffs = {};
 
     function setTimeDiff(id, diff) {
-    dict[id] = diff;
+    timeDiffs[id] = diff;
     }
 
     function getTimeDiff(id) {
-    return dict[id];
+    return timeDiffs[id];
     }
 
     function getTimeDiffSize() {

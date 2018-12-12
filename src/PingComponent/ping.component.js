@@ -13,7 +13,7 @@ class Ping extends Component {
     render() {
         let PingItems;
         if(this.state.ping){
-            PingItems = this.state.ping.map(ping => {      
+            PingItems = this.state.ping.map(ping => {
                 return(
                     <PingItem key={ping.original} ping={ping} />
                 );
@@ -26,7 +26,7 @@ class Ping extends Component {
             </div>
         );
     }
-    
+
     componentDidMount() {
         this.sendPing();
     }
@@ -36,11 +36,11 @@ class Ping extends Component {
         var total = 0;
         var id;
         for (i=0; i<4; i++) {
-    
-        var Url='http://10.1.10.114:4200/count/';
+
+        var Url='http://localhost:4200/count/';
         var timeSent = new Date().getTime();
         Url += "?time=" + timeSent;
-    
+
         $.ajax({
           //original code
           url: Url,
@@ -52,11 +52,11 @@ class Ping extends Component {
             var timeSent;
             var timeReceived;
             var timeTransmitted;
-            
+
             this.setState({ping: data}, function(){
             console.log(this.state);
             //var sending = this.props.players.timeReceived - this.props.timeSent;
-    
+
             });
             $(data).each(function(i, item){
               timeSent = item.original;
@@ -69,12 +69,12 @@ class Ping extends Component {
               var oneWay = roundTrip/2;
               var difference = Math.abs(sending - oneWay);
               total += difference;
-    
+
               console.log("Time Received: " + timeReceived + "\nTime Transmitted: " + timeTransmitted + "\nTotal: " + total + "\nID:" + id + "\n\n");
-    
+
               console.log("Sending: " + sending + "\nReceiving: " +
               receiving + "\nRoundtrip: " + roundTrip);
-    
+
             })
          }.bind(this),
          async: false,
@@ -82,7 +82,7 @@ class Ping extends Component {
             console.log(err);
           }
         });
-    
+
       }
       var avg = (total / 4);
       console.log(avg);
@@ -92,10 +92,10 @@ class Ping extends Component {
       sendPingResults(avg, id) {
 
         //POST METHOD
-        var Url='http://10.1.10.114:4200/submitping/';
-        const data= {diff : avg , 
+        var Url='http://localhost:4200/submitping/';
+        const data= {diff : avg ,
                      id : id };
-    
+
         $.ajax({
             //original code
         url: Url,
@@ -108,7 +108,7 @@ class Ping extends Component {
             console.log(this.state);
             console.log("HEEEERE");
           });
-    
+
         }.bind(this),
         error: function(xhr, status, err){
           console.log(err);
