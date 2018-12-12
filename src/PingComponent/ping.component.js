@@ -34,6 +34,7 @@ class Ping extends Component {
     sendPing(){
         var i;
         var total = 0;
+        var id;
         for (i=0; i<4; i++) {
     
         var Url='http://10.1.10.114:4200/count/';
@@ -47,11 +48,11 @@ class Ping extends Component {
           type: 'GET',
           cache: false,
           success: function(data){
+            var timeReturned = new Date().getTime();
             var timeSent;
             var timeReceived;
             var timeTransmitted;
-            var timeReturned = new Date().getTime();
-    
+            
             this.setState({ping: data}, function(){
             console.log(this.state);
             //var sending = this.props.players.timeReceived - this.props.timeSent;
@@ -61,7 +62,7 @@ class Ping extends Component {
               timeSent = item.original;
               timeReceived = item.received;
               timeTransmitted = item.transmitted;
-    
+              id = item.id;
               var sending = timeReceived - timeSent;
               var receiving = timeReturned - timeTransmitted;
               var roundTrip = sending + receiving;
@@ -69,7 +70,7 @@ class Ping extends Component {
               var difference = Math.abs(sending - oneWay);
               total += difference;
     
-              console.log("Time Received: " + timeReceived + "\nTime Transmitted: " + timeTransmitted + "\nTotal: " + total + "\n\n");
+              console.log("Time Received: " + timeReceived + "\nTime Transmitted: " + timeTransmitted + "\nTotal: " + total + "\nID:" + id + "\n\n");
     
               console.log("Sending: " + sending + "\nReceiving: " +
               receiving + "\nRoundtrip: " + roundTrip);
@@ -85,8 +86,37 @@ class Ping extends Component {
       }
       var avg = (total / 4);
       console.log(avg);
+      this.sendPingResults(avg, id);
+      }
+
+      sendPingResults(avg, id) {
+
+        //POST METHOD
+        var Url='http://10.1.10.114:4200/submitping/';
+        const data= {diff : avg , 
+                     id : id };
+    
+        $.ajax({
+            //original code
+        url: Url,
+        dataType: 'json',
+        data: data,
+        type: 'POST',
+        cache: false,
+        success: function(data){
+          this.setState({players: data}, function(){
+            console.log(this.state);
+            console.log("HEEEERE");
+          });
+    
+        }.bind(this),
+        error: function(xhr, status, err){
+          console.log(err);
+        }//end error
+        });//end $
       }
     }
+
 
 Ping.propTypes = {
     projects: PropTypes.array
