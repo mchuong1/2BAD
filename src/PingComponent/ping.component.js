@@ -39,9 +39,6 @@ class Ping extends Component {
         );
     }
 
-    componentDidMount() {
-        this.sendPing();
-    }
 
     sendPing(){
         var i;
@@ -129,12 +126,12 @@ class Ping extends Component {
         data: data,
         type: 'POST',
         cache: false,
-        success: function(data){
-          console.log("gameReady = " + data.gameReady + "\ndate = " + data.date);
-          if (data.gameReady === false) {
+        success: function(response){
+          console.log("gameReady = " + response.gameReady + "\ndate = " + data.date);
+          if (response.gameReady === false) {
             this.queued(oneWay, difference);
           } else {
-            this.startTimer.current.scheduleTimer(data.date);   // instead of simply responding with a date to start, the server should respond with
+            this.startTimer.current.scheduleTimer(response.date);   // instead of simply responding with a date to start, the server should respond with
                                               //    a new page that hold all game components
             console.log('oneWay: ' + oneWay + '\ndiff: ' + difference);
             var serverTime = new Date() - oneWay + difference;
@@ -152,9 +149,9 @@ class Ping extends Component {
       queued(oneWay, difference) {
 
         console.log('queued');
-
+        var time;
         var gameReady = false;
-        while (gameReady === false) {
+        var x = setInterval(function()  {
 
           // CALL TO SEE IF OTHER PLAYERS ARE gameReady
           //POST METHOD
@@ -162,8 +159,8 @@ class Ping extends Component {
 
           var Url='http://localhost:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
           Url += "?time=" + this.state.id;
-          var result;
-          console.log("HEERE")
+
+          console.log("HEEeeeeeeeeeeeeeeeRE")
           $.ajax({
               //original code
           url: Url,
@@ -172,16 +169,20 @@ class Ping extends Component {
           cache: false,
           success: function(data){
             gameReady = data.gameReady;
-            result = data;
+            time = data.date;
           }.bind(this),
           error: function(xhr, status, err){
             console.log(err);
           }//end error
           });//end $
 
-        }
+          if (gameReady === true) {
+            clearInterval(x);
+          }
 
-        this.startTimer.current.scheduleTimer(result.date);
+        }.bind(this), 5000);
+
+        this.startTimer.current.scheduleTimer(time);
         console.log('oneWay' + oneWay + '\ndiff' + difference);
         var serverTime = new Date() - oneWay + difference;
         var serverDate = new Date(serverTime);

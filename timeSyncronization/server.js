@@ -39,6 +39,7 @@ app.get('/count/?*', function(request, response){
     console.log(getTimeDiff(clientID));
     if(getTimeDiffSize() < 3) {
     response.status(200);
+    console.log(stallGame());
     response.send(stallGame());
     } else {
     response.status(200);
@@ -56,6 +57,7 @@ app.get('/lobby/?*', function(request, response){
     result = startGame();
     }
 
+    /*
 
      var clientID = request.query.time;
 
@@ -66,6 +68,7 @@ app.get('/lobby/?*', function(request, response){
     console.log(jsonString);
     response.send(jsonString);
 
+    */
 
     console.log('DONE\n');
         // respond with json
@@ -89,7 +92,7 @@ app.get('/lobby/?*', function(request, response){
     }
 
     function stallGame() {
-    return '{ "gameReady" : ' + false + ', "date" : ' + "undefined" + ' }';
+    return '{ "gameReady" : ' + false + ', "date" : ' + 00000000000 + ' }';
     }
 
 
