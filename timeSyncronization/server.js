@@ -38,6 +38,7 @@ app.get('/count/?*', function(request, response){
     setTimeDiff(clientID, timeDiff);
     console.log(getTimeDiff(clientID));
     if(getTimeDiffSize() < 3) {
+    console.log('NUMBER OF PLAYERS IN LOBBY = ' + getTimeDiffSize());
     response.status(200);
     console.log(stallGame());
     response.send(stallGame());
@@ -50,11 +51,14 @@ app.get('/count/?*', function(request, response){
 });
 
 app.get('/lobby/?*', function(request, response){
+    response.setHeader('Access-Control-Allow-Origin', '*');
     var result;
-    if (getTimeDiffSize() < 3) {
+    var id = request.query.id;
+    var numPlayers = getTimeDiffSize();
+    if (numPlayers < 3) {
     result = stallGame();
     } else {
-    result = startGame();
+    result = startGame(id);
     }
 
     /*
@@ -69,8 +73,9 @@ app.get('/lobby/?*', function(request, response){
     response.send(jsonString);
 
     */
-
-    console.log('DONE\n');
+    response.send(result);
+    console.log('Sent to ' + id + ' | Number of Players Ready: ' + numPlayers +
+    '\n' + result + '\n');
         // respond with json
 });
 
@@ -88,7 +93,9 @@ app.get('/lobby/?*', function(request, response){
 
     function startGame(id) {
     var date;
+    console.log('--------New Game Started!----------');
     return '{ "gameReady" : ' + true + ', "date" : ' + startDates[id] + ' }';
+
     }
 
     function stallGame() {

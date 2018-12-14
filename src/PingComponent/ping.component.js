@@ -158,9 +158,8 @@ class Ping extends Component {
 
 
           var Url='http://localhost:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
-          Url += "?time=" + this.state.id;
+          Url += "?id=" + this.state.id;
 
-          console.log("HEEeeeeeeeeeeeeeeeRE")
           $.ajax({
               //original code
           url: Url,
@@ -169,7 +168,14 @@ class Ping extends Component {
           cache: false,
           success: function(data){
             gameReady = data.gameReady;
+            console.log(gameReady);
             time = data.date;
+
+            if (gameReady === true) {
+              console.log(gameReady + 'ya');
+              clearInterval(x);
+            }
+
           }.bind(this),
           error: function(xhr, status, err){
             console.log(err);
@@ -177,6 +183,7 @@ class Ping extends Component {
           });//end $
 
           if (gameReady === true) {
+            console.log(gameReady + 'ya');
             clearInterval(x);
           }
 
