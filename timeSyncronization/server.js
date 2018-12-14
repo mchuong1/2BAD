@@ -39,20 +39,62 @@ app.get('/count/?*', function(request, response){
     console.log(getTimeDiff(clientID));
     if(getTimeDiffSize() < 3) {
     response.status(200);
-    response.send('Waiting on other players...');
+    response.send(stallGame());
     } else {
-    startGame();
+    response.status(200);
+    calculateStartDates();
+    response.send(startGame(clientID));
+
     }
 });
 
+app.get('/lobby/?*', function(request, response){
+    var result;
+    if (getTimeDiffSize() < 3) {
+    result = stallGame();
+    } else {
+    result = startGame();
+    }
 
-    function startGame() {
-    //start game logic here
-    console.log('start');
+
+     var clientID = request.query.time;
+
+    response.setHeader('Access-Control-Allow-Origin', '*');
+
+    var jsonString = '[{ "original" : ' + original + ', "received" : ' + received + ', "transmitted" : ' + new Date().getTime() + ', "id": "' + uuid.v4() + '" }]';
+
+    console.log(jsonString);
+    response.send(jsonString);
+
+
+    console.log('DONE\n');
+        // respond with json
+});
+
+    function calculateStartDates() {
+    var i;
+    var keys = Object.keys(timeDiffs);
+    keys.forEach(function(key){
+    var sendTime = timeDiffs[key];
+    var startTime = 1000 - sendTime;
+    startDates[key] = startTime;
+    });
+
+    }
+
+
+    function startGame(id) {
+    var date;
+    return '{ "gameReady" : ' + true + ', "date" : ' + startDates[id] + ' }';
+    }
+
+    function stallGame() {
+    return '{ "gameReady" : ' + false + ', "date" : ' + "undefined" + ' }';
     }
 
 
     var timeDiffs = {};
+    var startDates = {};
 
     function setTimeDiff(id, diff) {
     timeDiffs[id] = diff;

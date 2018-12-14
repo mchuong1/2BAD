@@ -3,19 +3,23 @@ import uuid from 'uuid';
 import PropTypes from 'prop-types';
 
 class StartTimer extends Component {
+
   constructor(){
     super();
     this.state = {
       newTimer:{}
     }
-  }
-  static defaultProps = {
-    categories: ['10', '20', '30']
+    this.startTimer = React.createRef();
   }
 
-  handleSubmit(e){
+  scheduleTimer(time) {
+    // at time given - call startTime()
+    console.log('Scheduled at this time: ' + time);
+  }
 
-    var timeValue = this.refs.category.value * 1000;
+  startTime(){
+
+    var timeValue = 10000;
     this.input.setAttribute("disabled", "disabled");
     this.setTimes(timeValue);
 
@@ -33,7 +37,7 @@ class StartTimer extends Component {
       this.setTimes(distance);
 
 
-  console.log("Category: " + this.refs.category.value + "\nDistance: " + distance +
+  console.log("\nDistance: " + distance +
   "\n" +this.state.timer);
 
   if (distance < 0) {
@@ -44,7 +48,7 @@ class StartTimer extends Component {
 }.bind(this), 1000);
 
 
-    e.preventDefault();
+    //e.preventDefault();
   }
 setTimes(distance) {
     var days = Math.floor(distance / (1000 * 60 * 60 * 24));
@@ -57,24 +61,10 @@ setTimes(distance) {
   }
 
   render() {
-    let categoryOptions = this.props.categories.map(category => {
-      return <option key={category} value={category}>{category}</option>
-    });
+
     return (
       <div>
-        <h3>Start Timer</h3>
-        <form onSubmit={this.handleSubmit.bind(this)}>
-          <div>
-            <label>Category</label><br />
-            <select ref="category">
-              {categoryOptions}
-            </select>
-            <br />
-            {this.state.timer}
-          </div>
-          <br />
-          <input type="submit" value="Submit" ref={input => {this.input = input}}/>
-        </form>
+      {this.state.timer}
       </div>
     );
   }
