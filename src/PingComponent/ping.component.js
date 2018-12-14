@@ -9,7 +9,7 @@ class Ping extends Component {
         super(props);
         this.state = {
             ping: [],
-            id: null
+            id: ""
         }
         this.startTimer = React.createRef();
       }
@@ -48,6 +48,7 @@ class Ping extends Component {
         var total = 0;
         var difference;
         var oneWay;
+        var id;
         for (i=0; i<4; i++) {
 
         var timeSent = new Date().getTime();
@@ -66,6 +67,7 @@ class Ping extends Component {
             var timeSent;
             var timeReceived;
             var timeTransmitted;
+            //var id;
 
             this.setState({ping: data}, function(){
             console.log(this.state);
@@ -76,7 +78,8 @@ class Ping extends Component {
               timeSent = item.original;
               timeReceived = item.received;
               timeTransmitted = item.transmitted;
-              this.setState({id : item.id});
+              //this.setState({id : item.id});
+              id = item.id;
               var sending = timeReceived - timeSent;
               var receiving = timeReturned - timeTransmitted;
               var roundTrip = sending + receiving;
@@ -96,19 +99,27 @@ class Ping extends Component {
             console.log(err);
           }
         });
+        }
+        this.setState({id: id}, function(){
+          console.log(id);
+          console.log("The ID: " + this.state.id);
+
+          var avg = (total / 4);
+          console.log(avg);
+          this.sendPingResults(avg, difference, oneWay);
+        //var sending = this.props.players.timeReceived - this.props.timeSent;
+
+        });
+
 
       }
-      var avg = (total / 4);
-      console.log(avg);
-      this.sendPingResults(avg, this.state.id, difference, oneWay);
-      }
 
-      sendPingResults(avg, id, difference, oneWay) {
+      sendPingResults(avg, difference, oneWay) {
 
         //POST METHOD
         var Url='http://localhost:4200/submitping/';
         const data= {diff : avg ,
-                     id : id };
+                     id : this.state.id };
 
         console.log("HEERE")
         $.ajax({
@@ -125,6 +136,7 @@ class Ping extends Component {
           } else {
             this.startTimer.current.scheduleTimer(data.date);   // instead of simply responding with a date to start, the server should respond with
                                               //    a new page that hold all game components
+            console.log('oneWay: ' + oneWay + '\ndiff: ' + difference);
             var serverTime = new Date() - oneWay + difference;
             var serverDate = new Date(serverTime);
             console.log(serverDate);
@@ -170,6 +182,7 @@ class Ping extends Component {
         }
 
         this.startTimer.current.scheduleTimer(result.date);
+        console.log('oneWay' + oneWay + '\ndiff' + difference);
         var serverTime = new Date() - oneWay + difference;
         var serverDate = new Date(serverTime);
         console.log(serverDate);
