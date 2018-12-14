@@ -181,13 +181,13 @@ class Ping extends Component {
           }
 
         }.bind(this), 5000);
-
-        this.startTimer.current.scheduleTimer(time);
-        console.log('oneWay' + oneWay + '\ndiff' + difference);
-        var serverTime = new Date() - oneWay + difference;
-        var serverDate = new Date(serverTime);
-        console.log(serverDate);
-
+        if (gameReady === true) {
+          this.startTimer.current.scheduleTimer(time);
+          console.log('oneWay' + oneWay + '\ndiff' + difference);
+          var serverTime = new Date() - oneWay + difference;
+          var serverDate = new Date(serverTime);
+          console.log(serverDate);
+        }
       }
     }
 

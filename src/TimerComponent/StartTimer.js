@@ -12,14 +12,15 @@ class StartTimer extends Component {
   }
 
   scheduleTimer(time) {
-    // at time given - call startTime()
-    console.log('Scheduled at this time: ' + time);
+    console.log("The time will start in " + time/1000 + " seconds");
+    setTimeout(()=>{
+      this.startTime();
+    }, time);
   }
 
   startTime(){
-
-    var timeValue = 10000;
-    this.input.setAttribute("disabled", "disabled");
+    //time will be date?
+    /*var timeValue = 10000;
     this.setTimes(timeValue);
 
     // Set the date we're counting down to
@@ -27,26 +28,28 @@ class StartTimer extends Component {
     console.log("Date: " + new Date().getTime() + "\nCountDown: " + countDownDate);
 
 
-    // Update the count down every 1 second
+    console.log("Seconds " + new Date().getSeconds() + "Countdown to: " + (new Date().getSeconds() + 10 ))
     var x = setInterval(function() {
 
       var now = new Date().getTime();
 
       var distance = countDownDate - now;
       this.setTimes(distance);
-
-
-  console.log("\nDistance: " + distance +
-  "\n" +this.state.timer);
-
-  if (distance < 0) {
-    this.input.removeAttribute("disabled");
-    clearInterval(x);
-    this.setState({timer: "EXPIRED"});
-  }
-}.bind(this), 1000);
-
-
+      
+      if (distance < 0) {
+        clearInterval(x);
+        this.setState({timer: "EXPIRED"});
+      }
+    }.bind(this), 1000); */
+    
+    this.setState({timer:10});
+    var y = setInterval(function() {
+      this.setState({timer: this.state.timer - 1});
+      if (this.state.timer < 0) {
+        clearInterval(y);
+        this.setState({timer: "EXPIRED"});
+      }  
+    }.bind(this), 1000)
     //e.preventDefault();
   }
 setTimes(distance) {
