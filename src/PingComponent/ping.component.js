@@ -174,7 +174,14 @@ class Ping extends Component {
             if (gameReady === true) {
               console.log(gameReady + 'ya');
               clearInterval(x);
+
+              this.startTimer.current.scheduleTimer(time);
+              console.log('oneWay' + oneWay + '\ndiff' + difference);
+              var serverTime = new Date() - oneWay + difference;
+              var serverDate = new Date(serverTime);
+              console.log(serverDate);
             }
+
 
           }.bind(this),
           error: function(xhr, status, err){
@@ -182,12 +189,9 @@ class Ping extends Component {
           }//end error
           });//end $
 
-          if (gameReady === true) {
-            console.log(gameReady + 'ya');
-            clearInterval(x);
-          }
 
-        }.bind(this), 5000);
+
+        }.bind(this), 2000);
         if (gameReady === true) {
           this.startTimer.current.scheduleTimer(time);
           console.log('oneWay' + oneWay + '\ndiff' + difference);

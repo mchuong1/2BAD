@@ -84,7 +84,7 @@ app.get('/lobby/?*', function(request, response){
     var keys = Object.keys(timeDiffs);
     keys.forEach(function(key){
     var sendTime = timeDiffs[key];
-    var startTime = 1000 - sendTime;
+    var startTime = 5000 - sendTime;
     startDates[key] = startTime;
     });
 
