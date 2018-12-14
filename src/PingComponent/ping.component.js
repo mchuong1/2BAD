@@ -129,7 +129,8 @@ class Ping extends Component {
         success: function(response){
           console.log("gameReady = " + response.gameReady + "\ndate = " + data.date);
           if (response.gameReady === false) {
-            this.queued(oneWay, difference);
+            var checkin_time = response.checkin;
+            this.queued(oneWay, difference, checkin_time);
           } else {
             this.startTimer.current.scheduleTimer(response.date);   // instead of simply responding with a date to start, the server should respond with
                                               //    a new page that hold all game components
@@ -146,60 +147,61 @@ class Ping extends Component {
         });//end $
       }
 
-      queued(oneWay, difference) {
+      queued(oneWay, difference, checkin_time) {
 
         console.log('queued');
         var time;
         var gameReady = false;
-        var x = setInterval(function()  {
+        var now = new Date().getTime();
+        var startInterval = checkin_time - now - oneWay;
+        setTimeout(()=>{
+          var x = setInterval(function()  {
 
-          // CALL TO SEE IF OTHER PLAYERS ARE gameReady
-          //POST METHOD
-
-
-          var Url='http://localhost:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
-          Url += "?id=" + this.state.id;
-
-          $.ajax({
-              //original code
-          url: Url,
-          dataType: 'json',
-          type: 'GET',
-          cache: false,
-          success: function(data){
-            gameReady = data.gameReady;
-            console.log(gameReady);
-            time = data.date;
-
-            if (gameReady === true) {
-              console.log(gameReady + 'ya');
-              clearInterval(x);
-
-              this.startTimer.current.scheduleTimer(time);
-              console.log('oneWay' + oneWay + '\ndiff' + difference);
-              var serverTime = new Date() - oneWay + difference;
-              var serverDate = new Date(serverTime);
-              console.log(serverDate);
-            }
-
-
-          }.bind(this),
-          error: function(xhr, status, err){
-            console.log(err);
-          }//end error
-          });//end $
-
-
-
-        }.bind(this), 2000);
+            // CALL TO SEE IF OTHER PLAYERS ARE gameReady
+            //POST METHOD
+            var Url='http://localhost:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
+            Url += "?id=" + this.state.id;
+  
+            $.ajax({
+                //original code
+            url: Url,
+            dataType: 'json',
+            type: 'GET',
+            cache: false,
+            success: function(data){
+              gameReady = data.gameReady;
+              console.log(gameReady);
+              time = data.date;
+  
+  
+              if (gameReady === true) {
+                console.log(gameReady + 'ya');
+                clearInterval(x);
+  
+                this.startTimer.current.scheduleTimer(time);
+                console.log('oneWay' + oneWay + '\ndiff' + difference);
+                var serverTime = new Date() - oneWay + difference;
+                var serverDate = new Date(serverTime);
+                console.log(serverDate);
+              }
+  
+  
+            }.bind(this),
+            error: function(xhr, status, err){
+              console.log(err);
+            }//end error
+            });//end $
+          }.bind(this), 2000);//end interval
+        }, startInterval)
+        
         if (gameReady === true) {
           this.startTimer.current.scheduleTimer(time);
           console.log('oneWay' + oneWay + '\ndiff' + difference);
           var serverTime = new Date() - oneWay + difference;
           var serverDate = new Date(serverTime);
           console.log(serverDate);
-        }
-      }
+        }//endif
+      }//end queue
     }
 
 

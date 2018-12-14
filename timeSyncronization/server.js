@@ -38,15 +38,22 @@ app.get('/count/?*', function(request, response){
     setTimeDiff(clientID, timeDiff);
     console.log(getTimeDiff(clientID));
     if(getTimeDiffSize() < 3) {
-    console.log('NUMBER OF PLAYERS IN LOBBY = ' + getTimeDiffSize());
-    response.status(200);
-    console.log(stallGame());
-    response.send(stallGame());
-    } else {
-    response.status(200);
-    calculateStartDates();
-    response.send(startGame(clientID));
-
+			//1st and 2nd execute this
+			console.log('NUMBER OF PLAYERS IN LOBBY = ' + getTimeDiffSize());
+			response.status(200);
+			console.log(stallGame());
+			response.send(stallGame());
+		} else {
+			//3rd player executes this
+			setTimeDiff(clientID, timeDiff);
+			while(!party_checkin_status){
+				//lastplayer waits in loop
+				//waits for party to check in
+				console.log("...");
+			}//end while
+			response.status(200);
+			calculateStartDates();
+			response.send(startGame(clientID));
     }
 });
 
@@ -56,9 +63,11 @@ app.get('/lobby/?*', function(request, response){
     var id = request.query.id;
     var numPlayers = getTimeDiffSize();
     if (numPlayers < 3) {
-    result = stallGame();
+			result = stallGame();
     } else {
-    result = startGame(id);
+			party_checkin_status = true;
+			result = startGame(id);
+			
     }
 
     /*
@@ -92,17 +101,25 @@ app.get('/lobby/?*', function(request, response){
 
 
     function startGame(id) {
-    var date;
-    console.log('--------New Game Started!----------');
-    return '{ "gameReady" : ' + true + ', "date" : ' + startDates[id] + ' }';
-
+    	var date;
+    	console.log('--------New Game Started!----------');
+    	return '{ "gameReady" : ' + true + ', "date" : ' + startDates[id] + '"checkin":' + null + '}';
     }
 
     function stallGame() {
-    return '{ "gameReady" : ' + false + ', "date" : ' + 00000000000 + ' }';
-    }
+			//provides gameready, date, checkin time
+    	return '{ "gameReady" : ' + false + ', "date" : ' + 00000000000 + ', "checkin": ' + getNextCheckinTime() +' }';
+		}
+		
+		function getNextCheckinTime(){
+			var current = new Date().getTime();
+			var leftover = current % 2000;
+			if(leftover === 0) leftover = 2000;
+			var checkin = current - leftover + 4000;
+			return checkin;
+		}
 
-
+		var party_checkin_status = false;
     var timeDiffs = {};
     var startDates = {};
 
