@@ -41,19 +41,13 @@ app.get('/count/?*', function(request, response){
 			//1st and 2nd execute this
 			console.log('NUMBER OF PLAYERS IN LOBBY = ' + getTimeDiffSize());
 			response.status(200);
-			console.log(stallGame());
-			response.send(stallGame());
+			console.log(stallGame(clientID));
+			response.send(stallGame(clientID));
 		} else {
-			//3rd player executes this
-			setTimeDiff(clientID, timeDiff);
-			while(!party_checkin_status){
-				//lastplayer waits in loop
-				//waits for party to check in
-				console.log("...");
-			}//end while
+			party_checkin_status = true;
 			response.status(200);
 			calculateStartDates();
-			response.send(startGame(clientID));
+			response.send(stallGame(clientID));
     }
 });
 
@@ -61,12 +55,11 @@ app.get('/lobby/?*', function(request, response){
     response.setHeader('Access-Control-Allow-Origin', '*');
     var result;
     var id = request.query.id;
-    var numPlayers = getTimeDiffSize();
-    if (numPlayers < 3) {
-			result = stallGame();
+    if (!party_checkin_status) {
+			result = stallGame(id);
     } else {
-			party_checkin_status = true;
 			result = startGame(id);
+			console.log('##########################');
 			
     }
 
@@ -83,7 +76,7 @@ app.get('/lobby/?*', function(request, response){
 
     */
     response.send(result);
-    console.log('Sent to ' + id + ' | Number of Players Ready: ' + numPlayers +
+    console.log('Sent to ' + id + ' | Number of Players Ready: ' + clientsWaiting.size +
     '\n' + result + '\n');
         // respond with json
 });
@@ -102,24 +95,47 @@ app.get('/lobby/?*', function(request, response){
 
     function startGame(id) {
     	var date;
-    	console.log('--------New Game Started!----------');
-    	return '{ "gameReady" : ' + true + ', "date" : ' + startDates[id] + '"checkin":' + null + '}';
+    	console.log('--------New game | Sent at ' + new Date() + '----------');
+    	return '{ "gameReady" : ' + true + ', "date" : ' + startDates[id] + ', "checkin":' + null + '}';
     }
 
-    function stallGame() {
+    function stallGame(id) {
 			//provides gameready, date, checkin time
-    	return '{ "gameReady" : ' + false + ', "date" : ' + 00000000000 + ', "checkin": ' + getNextCheckinTime() +' }';
+    	return '{ "gameReady" : ' + false + ', "date" : ' + 00000000000 + ', "checkin": ' + getNextCheckInTime(id) +' }';
 		}
 		
-		function getNextCheckinTime(){
+		function getNextCheckInTime(id){
+        console.log('Set length: ' + clientsWaiting.size);
+        if (clientsWaiting.size > 0) {
+            if(!clientsWaiting.has(id)) clientsWaiting.add(id);
+                checkInCount++;
+
+        } else {
+            clientsWaiting.add(id);
+            nextCheckIn = new Date().getTime();
+            checkInCount++;
+        }
+
+            if (checkInCount === clientsWaiting.size) {
+            nextCheckIn += 2000;
+            checkInCount = 0;
+            }
+            console.log('NEXT CHECKIN: ' + nextCheckIn);
+            return nextCheckIn;
+
+		/*
 			var current = new Date().getTime();
 			var leftover = current % 2000;
-			if(leftover === 0) leftover = 2000;
+			if(leftover === 0 & leftover < current) leftover = 2000;
 			var checkin = current - leftover + 4000;
 			return checkin;
+			*/
 		}
 
-		var party_checkin_status = false;
+    var nextCheckIn;
+    var checkInCount = 0;
+	var party_checkin_status = false;
+	var clientsWaiting = new Set();
     var timeDiffs = {};
     var startDates = {};
 
