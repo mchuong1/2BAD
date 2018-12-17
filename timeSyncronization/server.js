@@ -47,7 +47,10 @@ app.get('/count/?*', function(request, response){
 			party_checkin_status = true;
 			response.status(200);
 			calculateStartDates();
+			setTimeout(function() {
+
 			response.send(stallGame(clientID));
+			}, nextCheckIn);
     }
 });
 
@@ -120,7 +123,7 @@ app.get('/lobby/?*', function(request, response){
             nextCheckIn += 2000;
             checkInCount = 0;
             }
-            console.log('NEXT CHECKIN: ' + nextCheckIn);
+            console.log('NEXT CHECKIN: ' + nextCheckIn + '\nCOUNT: ' + checkInCount);
             return nextCheckIn;
 
 		/*
