@@ -44,13 +44,16 @@ app.get('/count/?*', function(request, response){
 			console.log(stallGame(clientID));
 			response.send(stallGame(clientID));
 		} else {
+
+			finalCheckIn = getCheckIn() + 1000;
 			party_checkin_status = true;
 			response.status(200);
 			calculateStartDates();
+			var checkInFromNow = finalCheckIn - (new Date().getTime());
+			//var checkInFromNow = nextCheckIn - (new Date().getTime());
 			setTimeout(function() {
-
-			response.send(stallGame(clientID));
-			}, nextCheckIn);
+			response.send(startGame(clientID));
+			}, checkInFromNow); //checkInFromNow + 4000);
     }
 });
 
@@ -58,11 +61,15 @@ app.get('/lobby/?*', function(request, response){
     response.setHeader('Access-Control-Allow-Origin', '*');
     var result;
     var id = request.query.id;
-    if (!party_checkin_status) {
-			result = stallGame(id);
-    } else {
-			result = startGame(id);
-			console.log('##########################');
+    console.log('CHECKIN STATUS @@@@@@@@@@@@@@@ : ' + party_checkin_status);
+    if(count === 2) result = startGame(id);
+    else {
+   // if (party_checkin_status) {
+    //finalCheckin = checkInTime + 4000;
+    			console.log('##########################');
+
+			result = stallGame();
+			//bit = true
 			
     }
 
@@ -96,22 +103,24 @@ app.get('/lobby/?*', function(request, response){
     }
 
 
+
     function startGame(id) {
     	var date;
-    	console.log('--------New game | Sent at ' + new Date() + '----------');
+    	console.log('--------New game | Sent at ' + new Date() + ' Final CheckIn: ' + finalCheckIn + '----------');
     	return '{ "gameReady" : ' + true + ', "date" : ' + startDates[id] + ', "checkin":' + null + '}';
     }
 
-    function stallGame(id) {
+    function stallGame() {
 			//provides gameready, date, checkin time
-    	return '{ "gameReady" : ' + false + ', "date" : ' + 00000000000 + ', "checkin": ' + getNextCheckInTime(id) +' }';
+			console.log('STALL GAME')
+    	return '{ "gameReady" : ' + false + ', "date" : ' + 00000000000 + ', "checkin": ' + getCheckIn() +' }';
 		}
 		
 		function getNextCheckInTime(id){
         console.log('Set length: ' + clientsWaiting.size);
         if (clientsWaiting.size > 0) {
             if(!clientsWaiting.has(id)) clientsWaiting.add(id);
-                checkInCount++;
+            checkInCount++;
 
         } else {
             clientsWaiting.add(id);
@@ -123,7 +132,13 @@ app.get('/lobby/?*', function(request, response){
             nextCheckIn += 2000;
             checkInCount = 0;
             }
-            console.log('NEXT CHECKIN: ' + nextCheckIn + '\nCOUNT: ' + checkInCount);
+            console.log('NEXT CHECKIN: ' + getCheckIn() + '\nCOUNT: ' + checkInCount);
+            if (party_checkin_status) {
+            console.log('CALL CALL CALL');
+            nextCheckIn = finalCheckIn;
+            flag = true;
+            }
+
             return nextCheckIn;
 
 		/*
@@ -135,12 +150,25 @@ app.get('/lobby/?*', function(request, response){
 			*/
 		}
 
+		function getCheckIn() {
+		console.log('NEXT CHECKIN: ' + currentCheckIn);
+		 if (party_checkin_status) {
+                    console.log('CALL CALL CALL');
+                    currentCheckIn = finalCheckIn;
+                    count++;
+                    }
+		return currentCheckIn;
+		}
+
+    var count = 0;
     var nextCheckIn;
+    var finalCheckIn;
     var checkInCount = 0;
 	var party_checkin_status = false;
 	var clientsWaiting = new Set();
     var timeDiffs = {};
     var startDates = {};
+    var currentCheckIn = new Date().getTime() + 2000;
 
     function setTimeDiff(id, diff) {
     timeDiffs[id] = diff;
@@ -154,9 +182,14 @@ app.get('/lobby/?*', function(request, response){
     return Object.keys(timeDiffs).length
     }
 
-    app.listen(port,/*'10.1.10.138',*/ function(){
-        console.log('Server is running my app on PORT: ' + port);
+    app.listen(port,'10.1.10.138', function(){
+        console.log('Server is now running my app on PORT: ' + port);
     });
+
+
+    setInterval(function() {
+    if(!party_checkin_status) currentCheckIn += 2000;
+    }, 2000)
 
     //socket.io practice
     var ioPort = 8000

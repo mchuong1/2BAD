@@ -49,7 +49,7 @@ class Ping extends Component {
         for (i=0; i<4; i++) {
 
         var timeSent = new Date().getTime();
-        var Url='http://localhost:4200/count/';
+        var Url='http://10.1.10.138:4200/count/';
 
         Url += "?time=" + timeSent;
 
@@ -114,7 +114,7 @@ class Ping extends Component {
       sendPingResults(avg, difference, oneWay) {
 
         //POST METHOD
-        var Url='http://localhost:4200/submitping/';
+        var Url='http://10.1.10.138:4200/submitping/';
         const data= {diff : avg ,
                      id : this.state.id };
 
@@ -150,18 +150,19 @@ class Ping extends Component {
       queued(oneWay, difference, checkin_time) {
 
         console.log('queued');
+        var pause = true;
         var time;
         var gameReady = false;
         var now = new Date().getTime();
-        var startInterval = checkin_time - now - oneWay;
+        var checkIn = checkin_time - now - oneWay;
+
         setTimeout(()=>{
-          var x = setInterval(function()  {
 
             // CALL TO SEE IF OTHER PLAYERS ARE gameReady
             //POST METHOD
-            var Url='http://localhost:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
+            var Url='http://10.1.10.138:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
             Url += "?id=" + this.state.id;
-  
+
             $.ajax({
                 //original code
             url: Url,
@@ -170,39 +171,44 @@ class Ping extends Component {
             cache: false,
             success: function(data){
               gameReady = data.gameReady;
+              checkIn = data.checkin;
               console.log(gameReady);
               time = data.date;
-  
-  
+              pause = false;
+
               if (gameReady === true) {
-                console.log(gameReady + 'ya');
-                clearInterval(x);
-  
-                this.startTimer.current.scheduleTimer(time);
-                console.log('oneWay' + oneWay + '\ndiff' + difference);
-                var serverTime = new Date() - oneWay + difference;
-                var serverDate = new Date(serverTime);
-                console.log(serverDate);
+
+                        this.startTimer.current.scheduleTimer(time);
+                        console.log('oneWay' + oneWay + '\ndiff' + difference);
+                        var serverTime = new Date() - oneWay + difference;
+                        var serverDate = new Date(serverTime);
+                        console.log(serverDate);
+              } else {
+                this.queued(oneWay, difference, checkIn);
               }
-  
-  
+
+
+
+
+
             }.bind(this),
             error: function(xhr, status, err){
               console.log(err);
             }//end error
             });//end $
-          }.bind(this), 2000);//end interval
-        }, startInterval)
-        
-        if (gameReady === true) {
-          this.startTimer.current.scheduleTimer(time);
-          console.log('oneWay' + oneWay + '\ndiff' + difference);
-          var serverTime = new Date() - oneWay + difference;
-          var serverDate = new Date(serverTime);
-          console.log(serverDate);
-        }//endif
+        }, checkIn)
+
+
+
+
+
+
       }//end queue
+
+
     }
+
+
 
 
 Ping.propTypes = {
