@@ -111,6 +111,7 @@ app.get('/lobby/?*', function(request, response){
     }
 
     function stallGame() {
+
 			//provides gameready, date, checkin time
 			console.log('STALL GAME')
     	return '{ "gameReady" : ' + false + ', "date" : ' + 00000000000 + ', "checkin": ' + getCheckIn() +' }';
@@ -152,11 +153,13 @@ app.get('/lobby/?*', function(request, response){
 
 		function getCheckIn() {
 		console.log('NEXT CHECKIN: ' + currentCheckIn);
+
 		 if (party_checkin_status) {
                     console.log('CALL CALL CALL');
                     currentCheckIn = finalCheckIn;
                     count++;
                     }
+
 		return currentCheckIn;
 		}
 
@@ -188,8 +191,8 @@ app.get('/lobby/?*', function(request, response){
 
 
     setInterval(function() {
-    if(!party_checkin_status) currentCheckIn += 2000;
-    }, 2000)
+    if(!party_checkin_status) currentCheckIn += 500;
+    }, 500)
 
     //socket.io practice
     var ioPort = 8000

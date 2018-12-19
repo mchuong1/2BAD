@@ -154,7 +154,9 @@ class Ping extends Component {
         var time;
         var gameReady = false;
         var now = new Date().getTime();
-        var checkIn = checkin_time - now - oneWay;
+        var checkIn = (checkin_time - difference) - now - oneWay;
+        console.log('(checkin_time: ' + checkin_time +
+         ' - difference: ' + difference + '\nnow: ' + now + '\noneWay: ' + oneWay + ' = ' + checkIn);
 
         setTimeout(()=>{
 
