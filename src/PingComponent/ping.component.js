@@ -33,7 +33,7 @@ class Ping extends Component {
                 <StartTimer ref={this.startTimer}/>
               </div>
               <br />
-              <button type="submit" onClick={this.sendPing.bind(this)}>Ready Up</button>
+              <button type="submit" onClick={this.sendPing.bind(this)} ref={btn => {this.btn = btn;}}>Ready Up</button>
 
             </div>
         );
@@ -46,10 +46,10 @@ class Ping extends Component {
         var difference;
         var oneWay;
         var id;
+        this.btn.setAttribute("disabled", "disabled");
         for (i=0; i<4; i++) {
-
         var timeSent = new Date().getTime();
-        var Url='http://10.1.10.138:4200/count/';
+        var Url='http://10.1.10.114:4200/count/';
 
         Url += "?time=" + timeSent;
 
@@ -114,7 +114,7 @@ class Ping extends Component {
       sendPingResults(avg, difference, oneWay) {
 
         //POST METHOD
-        var Url='http://10.1.10.138:4200/submitping/';
+        var Url='http://10.1.10.114:4200/submitping/';
         const data= {diff : avg ,
                      id : this.state.id };
 
@@ -162,7 +162,7 @@ class Ping extends Component {
 
             // CALL TO SEE IF OTHER PLAYERS ARE gameReady
             //POST METHOD
-            var Url='http://10.1.10.138:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
+            var Url='http://10.1.10.114:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
             Url += "?id=" + this.state.id;
 
             $.ajax({
@@ -179,12 +179,12 @@ class Ping extends Component {
               pause = false;
 
               if (gameReady === true) {
-
-                        this.startTimer.current.scheduleTimer(time);
-                        console.log('oneWay' + oneWay + '\ndiff' + difference);
-                        var serverTime = new Date() - oneWay + difference;
-                        var serverDate = new Date(serverTime);
-                        console.log(serverDate);
+                this.startTimer.current.scheduleTimer(time);
+                console.log('oneWay' + oneWay + '\ndiff' + difference);
+                var serverTime = new Date() - oneWay + difference;
+                var serverDate = new Date(serverTime);
+                console.log(serverDate);
+                this.btn.removeAttribute("disabled");
               } else {
                 this.queued(oneWay, difference, checkIn);
               }

@@ -185,7 +185,7 @@ app.get('/lobby/?*', function(request, response){
     return Object.keys(timeDiffs).length
     }
 
-    app.listen(port,'10.1.10.138', function(){
+    app.listen(port,'10.1.10.114', function(){
         console.log('Server is now running my app on PORT: ' + port);
     });
 
