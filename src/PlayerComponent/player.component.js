@@ -36,11 +36,19 @@ class Player extends Component {
         this.setState({players: [
             {
               name: "Tucker",
-              hobby: "free-line skating"
+              hobby: "Free-Line Skating"
             },
             {
               name: "Matthew",
-              hobby: "gaming"
+              hobby: "Gaming"
+            },
+            {
+                name: "Rolando",
+                hobby: "Dead by Daylight"
+            },
+            {
+                name: "Amstrong",
+                hobby: "Workout/Party"
             }
           ]});
     }

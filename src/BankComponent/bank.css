@@ -1,0 +1,8 @@
+.coinButton{
+    width: 100; 
+    height: 100; 
+    font-size: 20;
+    background-color: 'green';
+    color: 'white';
+    border-radius: 5;
+}

@@ -22,7 +22,15 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div 
+      className="App" 
+      style={{
+      textAlign:'center',
+      backgroundColor: 'aliceblue'}}>
+      <h1 style={{
+        fontSize:100,
+        color: 'purple'
+      }}>2BAD</h1>
         This is the timer value: {this.state.timestamp}
         <Player />
         <Card />

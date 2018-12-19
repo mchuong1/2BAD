@@ -33,7 +33,15 @@ class Ping extends Component {
                 <StartTimer ref={this.startTimer}/>
               </div>
               <br />
-              <button type="submit" onClick={this.sendPing.bind(this)} ref={btn => {this.btn = btn;}}>Ready Up</button>
+              <button type="submit" onClick={this.sendPing.bind(this)} ref={btn => {this.btn = btn;}}
+              style={{width: 100, 
+                height: 100, 
+                fontSize: 20,
+                backgroundColor: 'green',
+                color: 'white',
+                borderRadius: 5,
+                borderColor: 'black',
+              marginBottom: 20 }}>Ready Up</button>
 
             </div>
         );
@@ -184,15 +192,9 @@ class Ping extends Component {
                 var serverTime = new Date() - oneWay + difference;
                 var serverDate = new Date(serverTime);
                 console.log(serverDate);
-                this.btn.removeAttribute("disabled");
               } else {
                 this.queued(oneWay, difference, checkIn);
               }
-
-
-
-
-
             }.bind(this),
             error: function(xhr, status, err){
               console.log(err);
