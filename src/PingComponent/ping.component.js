@@ -57,7 +57,7 @@ class Ping extends Component {
         this.btn.setAttribute("disabled", "disabled");
         for (i=0; i<4; i++) {
         var timeSent = new Date().getTime();
-        var Url='http://10.1.10.114:4200/count/';
+        var Url='http://localhost:4200/count/';
 
         Url += "?time=" + timeSent;
 
@@ -122,7 +122,7 @@ class Ping extends Component {
       sendPingResults(avg, difference, oneWay) {
 
         //POST METHOD
-        var Url='http://10.1.10.114:4200/submitping/';
+        var Url='http://localhost:4200/submitping/';
         const data= {diff : avg ,
                      id : this.state.id };
 
@@ -170,7 +170,7 @@ class Ping extends Component {
 
             // CALL TO SEE IF OTHER PLAYERS ARE gameReady
             //POST METHOD
-            var Url='http://10.1.10.114:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
+            var Url='http://localhost:4200/lobby/';      // HTTP REQUEST NEEDS TO BE MODIFIED
             Url += "?id=" + this.state.id;
 
             $.ajax({
@@ -201,12 +201,6 @@ class Ping extends Component {
             }//end error
             });//end $
         }, checkIn)
-
-
-
-
-
-
       }//end queue
 
 

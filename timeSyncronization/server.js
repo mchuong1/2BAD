@@ -185,10 +185,9 @@ app.get('/lobby/?*', function(request, response){
     return Object.keys(timeDiffs).length
     }
 
-    app.listen(port,'10.1.10.114', function(){
+    app.listen(port, 'localhost',function(){
         console.log('Server is now running my app on PORT: ' + port);
     });
-
 
     setInterval(function() {
     if(!party_checkin_status) currentCheckIn += 500;
@@ -202,8 +201,12 @@ app.get('/lobby/?*', function(request, response){
             setInterval(()=>{
                 client.emit('timer', new Date().getTime());
             }, interval);
-        });
-    });
+				});
+				client.on('messageToServer', function(data) {
+					io.emit('messageToServer', data);
+					console.log(data);
+				}); 
+		});
 
     io.listen(ioPort);
     console.log('Socket.io listening on port ', ioPort);

@@ -4,6 +4,7 @@ import Card from './CardComponent/card.component';
 import Ping from './PingComponent/ping.component';
 import Bank from './BankComponent/bank.component';
 import StartTimer from './TimerComponent/StartTimer';
+import Chat from'./ChatComponenent/chat.component';
 import { subscribeToTimer } from './Service/timer';
 import './App.css';
 
@@ -37,6 +38,7 @@ class App extends Component {
         <Ping />
         <Bank />
         <StartTimer />
+        <Chat />
       </div>
     );
   }
