@@ -8,6 +8,7 @@ class Chat extends Component {
         <div id="chat">
             <div id="chatWindow">
                 <div id="output"></div>
+                <div id="feedback"></div>
             </div>
             <input id="name" type="text" placeholder="Name..."/>
             <input id="message" type="text" placeholder="Message..."/>

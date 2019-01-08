@@ -7,12 +7,16 @@ function subscribeToTimer(cb) {
 
 function messageToServer(name, message) {
     console.log("Sent: " + name + " " +message)
-    socket.emit('messageToServer', {message: message, name: name});
-    
-    socket.on('messageToServer', function(data){
-        console.log("Recieved: " + data.name + data.message);
-        var output = document.getElementById('output');
-        output.innerHTML += '<p><strong>' + data.name + ': </strong>' + data.message + '</p>'
+    socket.emit('messageToServer', {
+        message: message, 
+        name: name
     });
 }
+
+socket.on('messageToServer', function(data){
+    //this function is recieving to many times
+    console.log("Recieved: " + data.name + data.message);
+    var output = document.getElementById('output');
+    output.innerHTML += '<p><strong>' + data.name + ': </strong>' + data.message + '</p>'
+});
 export { subscribeToTimer, messageToServer }

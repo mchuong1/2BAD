@@ -30,7 +30,8 @@ class Bank extends Component {
             src={require('../assets/images/Coin.gif')} alt="spinning coin"
             /> 
             </div>
-            <button 
+            <button
+            className="CoinButton" 
             onClick={this.GiveCoins}
             style={{width: 100, 
                     height: 100, 

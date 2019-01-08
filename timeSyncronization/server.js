@@ -135,7 +135,7 @@ app.get('/lobby/?*', function(request, response){
             }
             console.log('NEXT CHECKIN: ' + getCheckIn() + '\nCOUNT: ' + checkInCount);
             if (party_checkin_status) {
-            console.log('CALL CALL CALL');
+            console.log('party is full! let\'s go!');
             nextCheckIn = finalCheckIn;
             flag = true;
             }
@@ -167,8 +167,8 @@ app.get('/lobby/?*', function(request, response){
     var nextCheckIn;
     var finalCheckIn;
     var checkInCount = 0;
-	var party_checkin_status = false;
-	var clientsWaiting = new Set();
+	  var party_checkin_status = false;
+	  var clientsWaiting = new Set();
     var timeDiffs = {};
     var startDates = {};
     var currentCheckIn = new Date().getTime() + 2000;
@@ -197,13 +197,14 @@ app.get('/lobby/?*', function(request, response){
     var ioPort = 8000
 
     io.on('connection', (client) => {
+				console.log("Made socket connection..." + client.id);
         client.on('subscribeToTimer', (interval)=> {
             setInterval(()=>{
                 client.emit('timer', new Date().getTime());
             }, interval);
 				});
 				client.on('messageToServer', function(data) {
-					io.emit('messageToServer', data);
+					io.emit('messageToServer', data); //emits to all clients when they are connected
 					console.log(data);
 				}); 
 		});

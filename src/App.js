@@ -25,20 +25,24 @@ class App extends Component {
     return (
       <div 
       className="App" 
-      style={{
-      textAlign:'center',
-      backgroundColor: 'aliceblue'}}>
+      >
       <h1 style={{
         fontSize:100,
         color: 'purple'
       }}>2BAD</h1>
-        This is the timer value: {this.state.timestamp}
-        <Player />
-        <Card />
-        <Ping />
-        <Bank />
-        <StartTimer />
-        <Chat />
+      <div className="row">
+      This is the timer value: {this.state.timestamp}
+        <div className="col-sm">
+          <Player />
+          <Card name="Bob Ross"/>
+        </div>
+        <div className="col-sm">
+          <Ping />
+          <Bank />
+          <StartTimer /></div>
+        <div className="col-sm">
+          <Chat /></div>
+      </div>
       </div>
     );
   }
