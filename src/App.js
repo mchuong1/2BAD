@@ -5,7 +5,7 @@ import Ping from './PingComponent/ping.component';
 import Bank from './BankComponent/bank.component';
 import StartTimer from './TimerComponent/StartTimer';
 import Chat from'./ChatComponenent/chat.component';
-import { subscribeToTimer } from './Service/timer';
+import { subscribeToTimer, connectionStatus } from './Service/socket';
 import './App.css';
 
 class App extends Component {
@@ -13,12 +13,15 @@ class App extends Component {
     super(props);
     this.state = {
       timestamp: 'no timestamp yet',
-      timer:""
+      lobby: 0
     }
 
-    subscribeToTimer((err, timestamp) => this.setState({
+    subscribeToTimer((err, timestamp) => 
+    this.setState({
       timestamp
     }));
+
+    connectionStatus((err, lobby) => this.setState({lobby}));
   }
 
   render() {
@@ -41,6 +44,7 @@ class App extends Component {
           <Bank />
           <StartTimer /></div>
         <div className="col-sm">
+        People in Lobby: {this.state.lobby}
           <Chat /></div>
       </div>
       </div>

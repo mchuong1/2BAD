@@ -41,7 +41,7 @@ class Ping extends Component {
                 color: 'white',
                 borderRadius: 5,
                 borderColor: 'black',
-              marginBottom: 20 }}>Ready Up</button>
+                marginBottom: 20 }}>Ready Up</button>
 
             </div>
         );

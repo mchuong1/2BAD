@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import { coinCounter} from '../Service/socket';
 const styles = {
     transition: 'all .5s ease-out',
     button: {
@@ -42,8 +42,11 @@ class Bank extends Component {
                     borderColor: 'orange' }}>Give me coins!</button>
             <p
             style={{
-                fontSize: 50
+                fontSize: 25
             }}>Coins: {this.state.coin}</p>
+            <div id="players">
+
+            </div>
         </div>
         );
     }
@@ -56,6 +59,7 @@ class Bank extends Component {
           setTimeout(()=>{
             this.setState({opacity:0, translateY:0});
           }, 500);
+          coinCounter(this.state.coin + 1);
     }
 
 

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {messageToServer} from '../Service/timer';
+import {messageToServer} from '../Service/socket';
 
 
 class Chat extends Component {

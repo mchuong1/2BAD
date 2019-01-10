@@ -193,21 +193,56 @@ app.get('/lobby/?*', function(request, response){
     if(!party_checkin_status) currentCheckIn += 500;
     }, 500)
 
-    //socket.io practice
+    //socket.io code
     var ioPort = 8000
+    var connectedClients = 0;
 
     io.on('connection', (client) => {
-				console.log("Made socket connection..." + client.id);
+		console.log("Made socket connection..." + client.id);
+        connectedClients++;
+
         client.on('subscribeToTimer', (interval)=> {
             setInterval(()=>{
                 client.emit('timer', new Date().getTime());
             }, interval);
-				});
-				client.on('messageToServer', function(data) {
-					io.emit('messageToServer', data); //emits to all clients when they are connected
-					console.log(data);
-				}); 
-		});
+        });
+        
+        client.on('sendStatus', (interval) => {
+            var data = {
+                lobbyNum: connectedClients,
+                clientID: client.id
+            }
+            setInterval(() => {
+                console.log("Lobby Status: " + connectedClients);
+                client.emit('connectionStatus', connectedClients)
+            }, interval)
+        })
+
+		client.on('messageToServer', function(data) {
+			io.emit('messageToServer', data); //emits to all clients when they are connected
+			console.log(data);
+		}); 
+
+		client.on('coinCounter', function(coin) {
+			var data = {
+				coin: coin.coin,
+				clientID: client.id
+				}
+			io.emit('coinCounter', data);
+			console.log(data);
+        });
+
+        client.on('disconnect', (reason) => {
+                connectedClients--;
+                var data = {
+                    lobbyNum: connectedClients,
+                    clientID: client.id
+                }
+                console.log('Disconnected Client: ' + client.id + "\nReason: " + reason);
+                io.emit('disconnect', data);
+        });
+
+		});//end connection
 
     io.listen(ioPort);
     console.log('Socket.io listening on port ', ioPort);
