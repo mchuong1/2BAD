@@ -7,6 +7,7 @@ function subscribeToTimer(cb) {
 }
 
 function connectionStatus(cb) {
+    //displays lobby
     socket.on('connectionStatus', lobby => cb(null, lobby));
     socket.emit('sendStatus', 1000);
 }

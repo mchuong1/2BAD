@@ -195,54 +195,69 @@ app.get('/lobby/?*', function(request, response){
 
     //socket.io code
     var ioPort = 8000
-    var connectedClients = 0;
-
+    var numConnectedClients = 0;
+    var clients = [];
+    
     io.on('connection', (client) => {
 		console.log("Made socket connection..." + client.id);
-        connectedClients++;
+        numConnectedClients++; //keeps count of howmany people in lobby
+
+        var player = {
+            clientID: client.id,
+            coin: 0
+        }
+        
+        clients.push(player); //add client to clients object array
 
         client.on('subscribeToTimer', (interval)=> {
+            //sends seconds
             setInterval(()=>{
                 client.emit('timer', new Date().getTime());
             }, interval);
         });
         
         client.on('sendStatus', (interval) => {
-            var data = {
-                lobbyNum: connectedClients,
-                clientID: client.id
-            }
+            //keeps track how many people in lobby
             setInterval(() => {
-                console.log("Lobby Status: " + connectedClients);
-                client.emit('connectionStatus', connectedClients)
+                console.log("Lobby Status: " + numConnectedClients);
+                console.log("Clients: ");
+                console.log(clients);
+                client.emit('connectionStatus', JSON.stringify(clients))
             }, interval)
         })
 
 		client.on('messageToServer', function(data) {
+            //controls the messaging center
 			io.emit('messageToServer', data); //emits to all clients when they are connected
 			console.log(data);
 		}); 
 
-		client.on('coinCounter', function(coin) {
-			var data = {
-				coin: coin.coin,
-				clientID: client.id
-				}
-			io.emit('coinCounter', data);
-			console.log(data);
+		client.on('coinCounter', function(data) {
+            //keeps track of coins per client
+            console.log("From Bank: " + data.coin);
+            clients.map(player => {
+                if(player.clientID === client.id) {
+                    player.coin = data.coin
+                }
+            })
         });
 
         client.on('disconnect', (reason) => {
-                connectedClients--;
+                numConnectedClients--;
                 var data = {
-                    lobbyNum: connectedClients,
+                    lobbyNum: numConnectedClients,
                     clientID: client.id
                 }
                 console.log('Disconnected Client: ' + client.id + "\nReason: " + reason);
                 io.emit('disconnect', data);
-        });
 
-		});//end connection
+                //deletes diconnected client from array
+                var index = clients.findIndex(i => i.clientID = client.id) ;
+                clients.splice(index, 1); //not working as expected
+                setTimeout(() => {console.log(clients)},0);
+        });//end disconnect
+
+	});//end connection
 
     io.listen(ioPort);
     console.log('Socket.io listening on port ', ioPort);

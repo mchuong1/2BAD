@@ -7,7 +7,7 @@ class Chat extends Component {
         return(
         <div id="chat">
             <div id="chatWindow">
-                <div id="output"></div>
+                <blockquote id="output"></blockquote>
                 <div id="feedback"></div>
             </div>
             <input id="name" type="text" placeholder="Name..."/>

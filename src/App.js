@@ -13,7 +13,7 @@ class App extends Component {
     super(props);
     this.state = {
       timestamp: 'no timestamp yet',
-      lobby: 0
+      lobby: []
     }
 
     subscribeToTimer((err, timestamp) => 
@@ -23,7 +23,9 @@ class App extends Component {
 
     connectionStatus((err, lobby) => this.setState({lobby}));
   }
-
+  
+ 
+ 
   render() {
     return (
       <div 
@@ -44,7 +46,7 @@ class App extends Component {
           <Bank />
           <StartTimer /></div>
         <div className="col-sm">
-        People in Lobby: {this.state.lobby}
+        <strong>People in Lobby:</strong>{this.state.lobby}
           <Chat /></div>
       </div>
       </div>
